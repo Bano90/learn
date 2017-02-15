@@ -40,7 +40,7 @@ class Plan{
         $mapper=new \DB\Jig\Mapper($db,'plans.json');
 
         $mapper->id=$data->id; //SM azonosító
-        $mapper->days=$data->days; //nap
+        $mapper->date=$data->date; //dátum
         $mapper->shiftnum=$data->shiftnum; //szak azonosító
         $mapper->type=$data->type; //termék típus
         $mapper->amount=$data->amount; // tervezett darab szám

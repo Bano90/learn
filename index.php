@@ -4,17 +4,27 @@ class Plan{
     {
         $db=new \DB\Jig('plans/',\DB\Jig::FORMAT_JSON);
         $mapper=new \DB\Jig\Mapper($db,'plans.json');
-        $plans=$mapper->find(Array('@id',$params['number']));
+        $plans=$mapper->find(Array('@id=?',$params['id']));
         $resault=[];
+        // ez csak egyet fog visszaadni, a legutolsó bejegyzést erre az "id" re
         foreach($plans as $k=>$plan){
-            foreach($l as $a=>$b){
-                if($a!='id' && $k["id"]==$params["id"])
+            foreach($plan as $a=>$b){
+                if($a!="_id" && $plan["id"]==$params["id"])
                 {
                     $resault[$a]=$b;
                 }
             }
         }
         echo json_encode($resault);
+        
+        // ez pedig annyit kellene visszaadjon, amennyi van
+        $res = [];
+        foreach($plans as $k=>$plan){
+            if($plan["id"]==$params["id"]){
+                array_push($res, $plan);
+            }
+        }
+        echo json_encode($res);
     }
 
     function post($app,$params)
@@ -74,6 +84,21 @@ class Plan{
 
 $app=require('../f3lib/base.php');
 $app->map('/plan/@id','Plan');
+
+// ez pedig adott id-re adott days-re kellene visszaadja mindeniket.
+$app->route('GET /plan/@id/@date', function($app, $params){
+    $db=new \DB\Jig('plans/',\DB\Jig::FORMAT_JSON);
+    $mapper=new \DB\Jig\Mapper($db,'plans.json');
+    $plans=$mapper->find(Array('@id = ? and @days = ?',$params['id'], $params['date']));
+    // ez pedig annyit kellene visszaadjon, amennyi van
+        $res = [];
+        foreach($plans as $k=>$plan){
+            if($plan["id"]==$params["id"]){
+                array_push($res, $plan);
+            }
+        }
+        echo json_encode($res);
+});
 
 $app->route('GET /plans',function($app){
     $data=file_get_contents('plans/plans.json');

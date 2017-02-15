@@ -41,10 +41,11 @@ class Plan{
 
         $mapper->id=$data->id; //SM azonosító
         $mapper->date=$data->date; //dátum
-        $mapper->shiftnum=$data->shiftnum; //szak azonosító
         $mapper->type=$data->type; //termék típus
-        $mapper->amount=$data->amount; // tervezett darab szám
-        $mapper->sheetnumber=$data->sheetnumber; //sheet szám a drabszámból számolva
+        $mapper->amountshift1=$data->amountshift1; // tervezett darab szám reggeles szak
+        $mapper->amountshift2=$data->amountshift2; // tervezett darab szám délutános szak
+        $mapper->amountshift3=$data->amountshift3; // tervezett darab szám éjszakás szak
+        $mapper->sheetnumber=$data->sheetnumber; //sheet szám típusból adódik
         $mapper->save();
 
         echo "OK";
@@ -60,7 +61,9 @@ class Plan{
         $db=new \DB\Jig('plans/',\DB\Jig::FORMAT_JSON);
         $plan=$mapper->load(Array('@id=?',$params['id']));
 
-        $plan->amount=$data->amount;
+        $plan->amountshift1=$data->amountshift1;
+        $plan->amountshift2=$data->amountshift2;
+        $plan->amountshift3=$data->amountshift3;
         $plan->save();
 
         echo "OK";

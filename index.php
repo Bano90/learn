@@ -15,13 +15,18 @@ class Plan{
                 }
             }
         }
-        echo json_encode($resault);
+        //echo json_encode($resault);
         
         // ez pedig annyit kellene visszaadjon, amennyi van
         $res = [];
         foreach($plans as $k=>$plan){
             if($plan["id"]==$params["id"]){
-                array_push($res, $plan);
+                $r = [];
+                foreach($plan as $a=>$b){
+                    if($a!="_id")
+                        $r[$a] = $b;
+                }
+                array_push($res, $r);
             }
         }
         echo json_encode($res);
@@ -37,7 +42,9 @@ class Plan{
         $mapper->id=$data->id; //SM azonosító
         $mapper->days=$data->days; //nap
         $mapper->shiftnum=$data->shiftnum; //szak azonosító
-        $mapper->amount=$data->amount; // tervezett darsb szám
+        $mapper->type=$data->type; //termék típus
+        $mapper->amount=$data->amount; // tervezett darab szám
+        $mapper->sheetnumber=$data->sheetnumber; //sheet szám a drabszámból számolva
         $mapper->save();
 
         echo "OK";
@@ -53,9 +60,6 @@ class Plan{
         $db=new \DB\Jig('plans/',\DB\Jig::FORMAT_JSON);
         $plan=$mapper->load(Array('@id=?',$params['id']));
 
-        /*$plan->id=$data->id;
-        $plan->days=$data->days;
-        $plan->shiftnum=$data->shiftnum;*/
         $plan->amount=$data->amount;
         $plan->save();
 
@@ -94,7 +98,12 @@ $app->route('GET /plan/@id/@date', function($app, $params){
         $res = [];
         foreach($plans as $k=>$plan){
             if($plan["id"]==$params["id"]){
-                array_push($res, $plan);
+                $r = [];
+                foreach($plan as $a=>$b){
+                    if($a!="_id")
+                        $r[$a] = $b;
+                }
+                array_push($res, $r);
             }
         }
         echo json_encode($res);
